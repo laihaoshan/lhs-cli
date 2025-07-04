@@ -2,12 +2,13 @@
   "name": "@lhs/scaffold",
   "version": "1.0.0",
   "bin": {
-    "vue-scaffold": "./bin/cli.ts"
+    "lhs-scaffold": "./dist/bin/cli.js"
   },
   "scripts": {
-    "build": "tsc && chmod +x bin/cli.ts",
-    "dev": "ts-node ./bin/cli.ts init",
-    "prepublishOnly": "npm run build && cp -r src/templates dist/templates",
+    "build": "rm -rf dist && tsc && copyfiles -u 1 src/templates/**/* dist",
+    "build:start": "node dist/bin/cli.js",
+    "dev": "ts-node src/bin/cli init",
+    "prepublishOnly": "npm run build",
     "webpack:dev": "cd src/templates/webpack/default/ && yarn run webpack serve --mode development",
     "vite:dev": "cd src/templates/webpack/default/ && yarn run vite",
     "prepare": "husky install"
@@ -18,13 +19,14 @@
     "commander": "^14.0.0",
     "fs-extra": "^11.2.0",
     "minimist": "^1.2.8",
-    "ts-node": "^10.9.2",
     "tsx": "^4.20.3"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.4",
+    "copyfiles": "^2.4.1",
     "husky": "^9.1.7",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "files": [

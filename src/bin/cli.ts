@@ -1,14 +1,12 @@
 #!/usr/bin/env node
+import { createProject } from '../lib/create';
 import { program } from 'commander';
-import { createProject } from '../src/lib/create';
+import fs from 'fs';
+import path from 'path';
 import chalk from 'chalk';
-const pkg = require('../package.json');
 
-interface CliOptions {
-	ts?: boolean;
-	pinia?: boolean;
-}
-
+// 读取package.json（注意JSON导入方式）
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf-8'));
 program
 	.version(pkg.version)
 	.command('init <project-name>') // 定义明确的 init 命令

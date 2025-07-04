@@ -8,11 +8,11 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"declaration": true,
-		"declarationDir": "./types",
-		"moduleResolution": "node",
-		"typeRoots": ["./node_modules/@types"],
-		"types": [] // 不自动包含任何类型定义
+		// "declaration": true,
+		// "declarationDir": "./dist/types",
+		"moduleResolution": "node"
+		// "typeRoots": ["./node_modules/@types"],
+		// "types": [] // 不自动包含任何类型定义
 	},
 	"include": ["src/**/*"],
 	"exclude": [
