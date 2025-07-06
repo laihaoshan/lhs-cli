@@ -1,18 +1,6 @@
-/*
- * @Author: liuchanghong
- * @Date: 2023-11-01 18:36:45
- * @Description: axios封装
- */
 import axios, { type AxiosResponse } from 'axios';
 import router from '@/router';
 export const API_PREFIX = '/api';
-export const API_OPERATE_PREFIX = '/api-operate';
-// 业务前台
-export const API_BUSINESS_FRONTEND_PREFIX = '/api-business-frontend';
-// 业务后台
-export const API_BUSINESS_BACKEND_PREFIX = '/api-business-backend';
-// 门户的服务编排
-export const API_PORTAL_PREFIX = '/api-portal';
 
 // 扩展 AxiosResponse 接口，添加 code 属性
 interface CustomAxiosResponse extends AxiosResponse<any> {
@@ -24,7 +12,7 @@ enum BLOB_TYPE {
 	/**异常 */
 	ERROR = 0,
 	/**成功 */
-	SUCCES = 1
+	SUCCES = 1,
 }
 
 /**
@@ -45,7 +33,7 @@ const config = {
 	// 公共请求头
 	headers: { 'Content-Type': 'application/json' },
 	timeout: 30000, // 超时时间
-	withCredentials: true
+	withCredentials: true,
 };
 const request = axios.create(config);
 
@@ -61,7 +49,7 @@ request.interceptors.request.use(
 	},
 	err => {
 		return Promise.reject(err);
-	}
+	},
 );
 
 /**
@@ -81,7 +69,7 @@ request.interceptors.response.use(
 		const responseData = response?.data ?? {
 			code: undefined,
 			data: undefined,
-			msg: undefined
+			msg: undefined,
 		};
 
 		/**  当responseType为blob的值*/
@@ -117,7 +105,7 @@ request.interceptors.response.use(
 			err.msg = '连接服务器失败!';
 		}
 		return Promise.reject(err || {});
-	}
+	},
 );
 
 /** 处理blob 二进制的传输问题 */
@@ -210,7 +198,7 @@ export function post(url: string, data?: any, config?: any): Promise<CustomAxios
 		url,
 		method: 'post',
 		data,
-		...config
+		...config,
 	});
 }
 
@@ -225,7 +213,7 @@ export function get(url: string, params: any = {}, config?: any): Promise<Custom
 		url,
 		method: 'get',
 		params,
-		...config
+		...config,
 	});
 }
 
@@ -240,7 +228,7 @@ export function patch(url: string, params: any = {}, config?: any): Promise<Cust
 		url,
 		method: 'patch',
 		params,
-		...config
+		...config,
 	});
 }
 
@@ -255,7 +243,7 @@ export function deletes(url: string, params: any = {}, config?: any): Promise<Cu
 		url,
 		method: 'delete',
 		params,
-		...config
+		...config,
 	});
 }
 
@@ -270,6 +258,6 @@ export function put(url: any, data: any = {}, config?: any): Promise<CustomAxios
 		url,
 		method: 'put',
 		data,
-		...config
+		...config,
 	});
 }

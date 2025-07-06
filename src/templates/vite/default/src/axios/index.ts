@@ -1,18 +1,6 @@
-/*
- * @Author: liuchanghong
- * @Date: 2023-11-01 18:36:45
- * @Description: axios封装
- */
 import axios, { type AxiosResponse } from 'axios';
 import router from '@/router';
 export const API_PREFIX = '/api';
-export const API_OPERATE_PREFIX = '/api-operate';
-// 业务前台
-export const API_BUSINESS_FRONTEND_PREFIX = '/api-business-frontend';
-// 业务后台
-export const API_BUSINESS_BACKEND_PREFIX = '/api-business-backend';
-// 门户的服务编排
-export const API_PORTAL_PREFIX = '/api-portal';
 
 // 扩展 AxiosResponse 接口，添加 code 属性
 interface CustomAxiosResponse extends AxiosResponse<any> {
