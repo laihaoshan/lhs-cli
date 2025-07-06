@@ -1,8 +1,8 @@
 {
-  "name": "@lhs/scaffold",
+  "name": "@lhs/cli",
   "version": "1.0.0",
   "bin": {
-    "lhs-scaffold": "./dist/bin/cli.js"
+    "lhs-cli": "./dist/bin/cli.js"
   },
   "scripts": {
     "build": "rm -rf dist && tsc && copyfiles -u 1 src/templates/**/* dist",
@@ -30,10 +30,7 @@
     "typescript": "^5.8.3"
   },
   "files": [
-    "bin",
-    "lib",
-    "types",
-    "src/templates"
+    "dist"
   ],
   "engines": {
     "node": ">=16.0.0"
