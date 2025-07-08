@@ -4,13 +4,13 @@
 
 ## 模板概览
 
-### Vite 模板 (src/templates/vite/default)
+### Vite 模板
 - 基于 Vue 3 + TypeScript + Vite
 - 包含基础项目结构，如 `src/main.ts`, `src/router`, `src/store` 等
 - 集成 Axios 请求封装，支持 Blob 类型响应处理
 - 提供默认样式定义和组件模板
 
-### Webpack 模板 (src/templates/webpack/default)
+### Webpack 模板
 - 基于 Vue 3 + TypeScript + Webpack
 - 包含 Webpack 标准配置文件，如 `webpack.config.ts`, `devServer.ts`, `optimization.ts` 等
 - 提供 Eslint、Prettier 等开发工具配置
@@ -25,29 +25,23 @@
 - 提供基础样式和组件模板
 
 ## 安装与使用
-
-1. 克隆本仓库：
    ```bash
-   git clone <仓库地址>
+   npm i lhs-cli -g
+   yarn global add lhs-cli 
    ```
-
-2. 进入模板目录并安装依赖：
    ```bash
-   cd src/templates/vite/default
-   npm install
-   # 或者使用 Webpack 模板
-   cd src/templates/webpack/default
-   npm install
-   ```
+    lhs-cli init <projectName>
+    # 请选择构建工具 (Use arrow keys)
+    #   webpack
+    # > vite
+    # 是否需要添加 husky (Git hooks 工具)? (Y/n) Yes
+    #  commit-msg 是否需要配置提交校验规则? (Y/n) Yes
+    # ✅ husky 已在 D:\other_project\BFF\test 配置完成!
+    # ✔ 项目创建成功！
+    # ◇ 进入项目目录：cd ./test
+    # △ 安装依赖：yarn
+    # ☆ 本地启动项目：yarn run dev
 
-3. 启动开发服务器：
-   ```bash
-   npm run dev
-   ```
-
-4. 构建生产版本：
-   ```bash
-   npm run build
    ```
 
 ## 贡献指南

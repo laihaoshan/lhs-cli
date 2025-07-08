@@ -1,7 +1,7 @@
 {
   "name": "lhs-cli",
-  "version": "0.0.3",
-  "license": "ISC",
+  "version": "0.1.0",
+  "license": "MIT",
   "bin": {
     "lhs-cli": "./dist/bin/cli.js"
   },
@@ -37,10 +37,15 @@
     "dist"
   ],
   "keywords": [
-    "keyword1",
-    "keyword2"
+    "vue",
+    "cli",
+    "tool",
+    "utility"
   ],
-  "author": "lai_haoshan",
+  "author": {
+    "url": "https://github.com/laihaoshan",
+    "name": "lai_haoshan"
+  },
   "engines": {
     "node": ">=16.0.0"
   },
