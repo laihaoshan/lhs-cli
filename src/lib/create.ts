@@ -28,12 +28,10 @@ export async function createProject(projectName: string | undefined): Promise<vo
 		console.log(`
 templates/
 ├── webpack/
-│   ├──
-│   └──              
+│   └──default
 │
 └── vite/
-    ├──default
-    └──
+    └──default
     `);
 		process.exit(1);
 	}
@@ -76,7 +74,8 @@ templates/
 			await setupHusky(targetDir);
 		}
 		console.log(chalk.green('✔ 项目创建成功！'));
-		console.log(chalk.blue(`◆ 进入项目目录：cd ./${projectName}`));
+		console.log(chalk.blue(`◇ 进入项目目录：cd ./${projectName}`));
+		console.log(chalk.blue(`△ 安装依赖：${projectName === 'npm' ? 'npm i' : 'yarn'}`));
 		console.log(chalk.blue(`☆ 本地启动项目：${packageManager === 'npm' ? 'npm run dev' : 'yarn run dev'}`));
 	} catch (err) {
 		console.error(chalk.red('✖ 项目创建失败:'));

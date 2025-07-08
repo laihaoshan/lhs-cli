@@ -15,5 +15,13 @@ module.exports = {
 			changeOrigin: true,
 			pathRewrite: { '^/api': '' },
 		},
+		{
+			context: ['/ws-api'],
+			// context: ['/api', '/graphql'], // 多路径代理
+			target: 'ws://your-api-domain/',
+			ws: true,
+			changeOrigin: true,
+			pathRewrite: { '^/ws-api': '' },
+		},
 	],
 };
