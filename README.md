@@ -33,12 +33,12 @@
 
 ### Vite 模板
 - 基于 Vue 3 + TypeScript + Vite
-- 包含基础项目结构，如 `src/main.ts`, `src/router`, `src/store` 等
+- 包含基础项目结构
 - 提供默认样式定义和组件模板
 
 ### Webpack 模板
 - 基于 Vue 3 + TypeScript + Webpack
-- 包含 Webpack 标准配置文件，如 `webpack.config.ts`, `devServer.ts`, `optimization.ts` 等
+- 包含 Webpack 标准配置文件
 - 提供 Eslint、Prettier 等开发工具配置
 - 集成 基础路由、状态管理模块
 
