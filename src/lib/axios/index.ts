@@ -19,15 +19,12 @@ export default async function setupAxios(targetDir: string) {
 		const originalDir = process.cwd();
 
 		const templateDir = path.join(__dirname, `./templates`);
-		const utilsDir = path.join(__dirname, `./utils`);
 		try {
 			// 切换到目标目录
 			process.chdir(targetDir);
 
 			const templateFile = `${axiosTemplate}.ts`;
-			const utilsFile = 'axios.ts';
 			await fs.copy(path.join(templateDir, templateFile), path.join(targetDir, '\\src\\axios\\request.ts'));
-			await fs.copy(path.join(utilsDir, utilsFile), path.join(targetDir, '\\src\\utils\\axios.ts'));
 
 			/**添加 prepare 脚本 */
 			const pkgPath = path.join(targetDir, 'package.json');

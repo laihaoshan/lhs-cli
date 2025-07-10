@@ -9,8 +9,10 @@
     "access": "public"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc && copyfiles -u 1 src/templates/**/* dist",
+    "build": "rm -rf dist && tsc && yarn copy:templates && yarn copy:axios",
     "build:start": "node dist/bin/cli.js",
+    "copy:templates": "copyfiles -u 1 src/templates/**/* dist",
+    "copy:axios": "copyfiles -u 1 src/lib/axios/templates/**/* dist",
     "dev": "ts-node src/bin/cli init",
     "prepublishOnly": "npm run build",
     "webpack:dev": "cd src/templates/webpack/default/ && yarn run webpack serve --mode development",

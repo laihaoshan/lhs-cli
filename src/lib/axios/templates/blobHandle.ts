@@ -1,11 +1,34 @@
 import axios, { type AxiosResponse } from 'axios';
-import { handleBlobResq, BLOB_TYPE } from '@/utils/axios';
 
 // 扩展 AxiosResponse 接口，添加 code 属性
 interface CustomAxiosResponse extends AxiosResponse<any> {
 	code?: number;
 	msg?: any;
 }
+
+enum BLOB_TYPE {
+	/**异常 */
+	ERROR = 0,
+	/**成功 */
+	SUCCES = 1
+}
+
+/** 处理blob 二进制的传输问题 */
+const handleBlobResq = async (response: any, responseData: any) => {
+	// 只有当无法将response.data转换的时候才会返回正常的json
+	return new Promise(resolve => {
+		new Response(response.data)
+			.text()
+			.then(text => {
+				const blobResponseData = JSON.parse(text);
+				const code = blobResponseData.code;
+				resolve({ type: BLOB_TYPE.ERROR, blobResponseData, code });
+			})
+			.catch(() => {
+				resolve({ type: BLOB_TYPE.SUCCES, responseData });
+			});
+	});
+};
 
 /**错误码枚举映射 */
 const errorStatusMap = new Map([
