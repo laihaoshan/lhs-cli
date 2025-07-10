@@ -22,11 +22,5 @@ program.on('command:*', () => {
 	program.outputHelp();
 	process.exit(1);
 });
-process.on('uncaughtException', err => {
-	if (err?.message.includes('User force closed the prompt with SIGINT')) {
-		console.log(chalk.yellow('⚠ 操作已取消'));
-		process.exitCode = 1; // 设置退出码
-		process.exit(); // 优雅退出
-	}
-});
+
 program.parse(process.argv);

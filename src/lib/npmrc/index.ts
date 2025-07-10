@@ -1,11 +1,9 @@
-import { execSync } from 'child_process';
-import { confirm } from '@inquirer/prompts';
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
 import { npmrcOption } from './npmmirror';
 
-export default async function setupHusky(targetDir: string) {
+export default async function setupNpmrc(targetDir: string) {
 	try {
 		console.log(chalk.blue('🚀 开始在目标项目配置国内淘宝镜像...'));
 

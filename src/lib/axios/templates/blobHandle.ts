@@ -1,6 +1,5 @@
 import axios, { type AxiosResponse } from 'axios';
-import router from '@/router';
-export const API_PREFIX = '/api';
+import { handleBlobResq, BLOB_TYPE } from '@/utils/axios';
 
 // 扩展 AxiosResponse 接口，添加 code 属性
 interface CustomAxiosResponse extends AxiosResponse<any> {
@@ -8,32 +7,30 @@ interface CustomAxiosResponse extends AxiosResponse<any> {
 	msg?: any;
 }
 
-enum BLOB_TYPE {
-	/**异常 */
-	ERROR = 0,
-	/**成功 */
-	SUCCES = 1,
-}
-
-/**
- * 清除本地缓存和退出系统到登陆页
- */
-const goLogin = () => {
-	const pathName = window.location.pathname;
-
-	if (pathName === '/login') return;
-	if (pathName && pathName !== '/login' && pathName !== '/') {
-		router.push(`/login?callback=${encodeURIComponent(window.location.href)}`);
-	} else {
-		router.push('/login');
-	}
-};
+/**错误码枚举映射 */
+const errorStatusMap = new Map([
+	[400, '请求参数不正确'],
+	[401, '账号未登录'],
+	[403, '没有该操作权限'],
+	[404, '请求未找到'],
+	[408, '请求超时'],
+	[423, '请求失败，请稍后重试'],
+	[429, '请求过于频繁，请稍后重试'],
+	[500, '系统异常'],
+	[501, '功能未实现/未开启'],
+	[502, '网络错误'],
+	[503, '服务不可用'],
+	[504, '网络超时'],
+	[505, 'HTTP版本不受支持'],
+	[900, '重复请求，请稍后重试'],
+	[999, '未知错误'],
+	[1201003406, '请求短信过于频繁']
+]);
 
 const config = {
-	// 公共请求头
 	headers: { 'Content-Type': 'application/json' },
 	timeout: 30000, // 超时时间
-	withCredentials: true,
+	withCredentials: true
 };
 const request = axios.create(config);
 
@@ -42,14 +39,11 @@ const request = axios.create(config);
  */
 request.interceptors.request.use(
 	async (config: any) => {
-		// const accessToken = 'Bearer test1725412211666714625:1725412211666714625';
-		// config.headers.Authorization = accessToken;
-
 		return config;
 	},
-	err => {
+	(err: any) => {
 		return Promise.reject(err);
-	},
+	}
 );
 
 /**
@@ -58,7 +52,6 @@ request.interceptors.request.use(
  */
 request.interceptors.response.use(
 	async (response: any) => {
-		// loading && loading.close();
 		let code = null;
 		if (response.config.data && response.config.data.get) {
 			code = response.data ? response.data.code : null;
@@ -69,7 +62,7 @@ request.interceptors.response.use(
 		const responseData = response?.data ?? {
 			code: undefined,
 			data: undefined,
-			msg: undefined,
+			msg: undefined
 		};
 
 		/**  当responseType为blob的值*/
@@ -88,9 +81,6 @@ request.interceptors.response.use(
 		switch (code) {
 			case 0:
 				return Promise.resolve(responseData);
-			case 401:
-				goLogin();
-				return;
 			default:
 				if (response.config.responseType === 'blob') {
 					return Promise.reject(blobResponseData);
@@ -98,95 +88,15 @@ request.interceptors.response.use(
 				return Promise.reject(responseData as any);
 		}
 	},
-	err => {
+	(err: any) => {
 		if (err && err.response) {
-			err.msg = errorStatus(err.response);
+			err.msg = errorStatusMap.get(err.response?.status) ?? '连接出错!';
 		} else {
 			err.msg = '连接服务器失败!';
 		}
 		return Promise.reject(err || {});
-	},
-);
-
-/** 处理blob 二进制的传输问题 */
-const handleBlobResq = async (response: any, responseData: any) => {
-	// 只有当无法将response.data转换的时候才会返回正常的json
-	return new Promise(resolve => {
-		new Response(response.data)
-			.text()
-			.then(text => {
-				const blobResponseData = JSON.parse(text);
-				const code = blobResponseData.code;
-				resolve({ type: BLOB_TYPE.ERROR, blobResponseData, code });
-			})
-			.catch(() => {
-				resolve({ type: BLOB_TYPE.SUCCES, responseData });
-			});
-	});
-};
-
-/**
- * get status code
- */
-const errorStatus = (response: any): string => {
-	/** http status code */
-	const code = response.status;
-	/** notice text */
-	let msg;
-	switch (code) {
-		case 400:
-			msg = '请求参数不正确';
-			break;
-		case 401:
-			msg = '账号未登录';
-			break;
-		case 403:
-			msg = '没有该操作权限';
-			break;
-		case 404:
-			msg = '请求未找到';
-			break;
-		case 408:
-			msg = '请求超时';
-			break;
-		case 423:
-			msg = '请求失败，请稍后重试';
-			break;
-		case 429:
-			msg = '请求过于频繁，请稍后重试';
-			break;
-		case 500:
-			msg = '系统异常';
-			break;
-		case 501:
-			msg = '功能未实现/未开启';
-			break;
-		case 502:
-			msg = '云商接口系统异常';
-			break;
-		case 503:
-			msg = '服务不可用';
-			break;
-		case 504:
-			msg = '网络超时';
-			break;
-		case 505:
-			msg = 'HTTP版本不受支持';
-			break;
-		case 900:
-			msg = '重复请求，请稍后重试';
-			break;
-		case 999:
-			msg = '未知错误';
-			break;
-		case 1201003406:
-			msg = '请求短信过于频繁';
-			break;
-		default:
-			msg = `连接出错!`;
 	}
-	return msg;
-};
+);
 
 /**
  * @url请求路径
@@ -198,7 +108,7 @@ export function post(url: string, data?: any, config?: any): Promise<CustomAxios
 		url,
 		method: 'post',
 		data,
-		...config,
+		...config
 	});
 }
 
@@ -213,7 +123,7 @@ export function get(url: string, params: any = {}, config?: any): Promise<Custom
 		url,
 		method: 'get',
 		params,
-		...config,
+		...config
 	});
 }
 
@@ -228,7 +138,7 @@ export function patch(url: string, params: any = {}, config?: any): Promise<Cust
 		url,
 		method: 'patch',
 		params,
-		...config,
+		...config
 	});
 }
 
@@ -243,7 +153,7 @@ export function deletes(url: string, params: any = {}, config?: any): Promise<Cu
 		url,
 		method: 'delete',
 		params,
-		...config,
+		...config
 	});
 }
 
@@ -258,6 +168,6 @@ export function put(url: any, data: any = {}, config?: any): Promise<CustomAxios
 		url,
 		method: 'put',
 		data,
-		...config,
+		...config
 	});
 }

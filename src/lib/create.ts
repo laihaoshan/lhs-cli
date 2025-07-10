@@ -3,6 +3,7 @@ import path from 'path';
 import chalk from 'chalk';
 import setupHusky from './husky';
 import setupNpmrc from './npmrc';
+import setupAxios from './axios';
 import { select, confirm } from '@inquirer/prompts';
 
 export async function createProject(projectName: string | undefined): Promise<void> {
@@ -44,21 +45,32 @@ templates/
 		if (!overwrite) process.exit(1);
 		await fs.emptyDir(targetDir);
 	}
-	/**询问是否添加国内淘宝镜像 */
-	const needNpmrc = await confirm({
-		message: '是否需要配置国内淘宝镜像?',
-		default: true
-	});
-
-	/**询问是否添加husky */
-	const needHusky = await confirm({
-		message: '是否需要添加 husky (Git hooks 工具)?',
-		default: true
-	});
 
 	try {
 		/**复制模板文件 */
 		await fs.copy(templateDir, targetDir);
+
+		/**询问是否添加axios作为HTTP客户端 */
+		const needAxios = await confirm({
+			message: '是否以 axios 作为HTTP客户端?',
+			default: true
+		});
+
+		if (needAxios) {
+			await setupAxios(targetDir);
+		}
+
+		/**询问是否添加国内淘宝镜像 */
+		const needNpmrc = await confirm({
+			message: '是否需要配置国内淘宝镜像?',
+			default: true
+		});
+
+		/**询问是否添加husky */
+		const needHusky = await confirm({
+			message: '是否需要添加 husky (Git hooks 工具)?',
+			default: true
+		});
 
 		/**动态修改文件内容 */
 		if (projectName) {
@@ -75,6 +87,7 @@ templates/
 			// 写回文件
 			await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 		}
+
 		if (needNpmrc) {
 			await setupNpmrc(targetDir);
 		}
@@ -87,9 +100,11 @@ templates/
 		console.log(chalk.blue(`◇ 进入项目目录：cd ./${projectName}`));
 		console.log(chalk.blue(`△ 安装依赖：npm i / yarn / pnpm i`));
 		console.log(chalk.blue(`☆ 本地启动项目：npm run dev / yarn run dev / pnpm run dev`));
-	} catch (err) {
+	} catch (err: any) {
 		console.error(chalk.red('✖ 项目创建失败:'));
-		console.error(err);
+		if (err?.message.includes('User force closed the prompt with SIGINT')) {
+			console.log(chalk.yellow('⚠ 操作已取消'));
+		}
 		process.exit(1);
 	}
 }
