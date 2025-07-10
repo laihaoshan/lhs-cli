@@ -19,6 +19,7 @@
 		"node_modules",
 		"dist",
 		"types",
-		"src/templates/**/*" // 排除所有模板文件
+		"src/templates/**/*", // 排除所有模板文件
+		"src/lib/axios/templates/*" // 排除所有模板文件
 	]
 }
