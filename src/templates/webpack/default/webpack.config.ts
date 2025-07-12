@@ -11,9 +11,9 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		/**打包文件 */
-		filename: `${loc}/js/[name].[contenthash].js`,
-		/**打包异步文件 */
-		chunkFilename: `${loc}/js/[name].[contenthash].js`,
+		// 关键修改：时间戳仅用于资源路径，chunk 路径保持稳定
+		filename: env ? '[name].js' : `${loc}js/[name].[contenthash].js`,
+		chunkFilename: env ? '[name].chunk.js' : `${loc}js/[name].[contenthash].chunk.js`,
 	},
 	resolve: {
 		extensions: ['.ts', '.tsx', '.js', '.jsx', '.vue', '.json'],
@@ -68,7 +68,7 @@ module.exports = {
 				type: 'asset/resource',
 				generator: {
 					/**打包图片资源 */
-					filename: `${timestamp}/images/[name].[hash:8][ext]`,
+					filename: `${loc}images/[name].[hash:8][ext]`,
 				},
 			},
 		],
