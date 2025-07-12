@@ -1,5 +1,4 @@
 const path = require('path');
-const webpackModule = require('./build/module');
 const webpackPlugins = require('./build/plugins');
 const webpackDevServer = require('./build/devServer');
 const webpackOptimization = require('./build/optimization');
