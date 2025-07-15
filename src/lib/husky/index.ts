@@ -1,11 +1,10 @@
 import { execSync } from 'child_process';
-import { confirm } from '@inquirer/prompts';
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
 import { writePreCommitDefault } from './commit-msg';
 
-export default async function setupHusky(targetDir: string) {
+export default async function setupHusky(targetDir: string, needCommitMsg: boolean) {
 	try {
 		console.log(chalk.blue('🚀 开始在目标项目配置 husky...'));
 
@@ -16,25 +15,14 @@ export default async function setupHusky(targetDir: string) {
 			// 切换到目标目录
 			process.chdir(targetDir);
 
-			// /**确保是 Git 仓库 */
-			// try {
-			// 	execSync('git rev-parse --git-dir', { stdio: 'ignore' });
-			// } catch {
 			console.log(chalk.yellow('ℹ️ 在目标目录初始化 Git 仓库...'));
 			execSync('git init', { stdio: 'inherit' });
-			// }
 
 			/**在目标项目安装 husky */
 			console.log(chalk.blue(`📦 在 ${targetDir} 配置 husky...`));
 			execSync(`npx husky-init`, { stdio: 'inherit' });
-			/**是否提交校验信息 */
-			const needCommitMsg = await confirm({
-				message: 'commit-msg 是否需要配置提交校验规则?',
-				default: true
-			});
 
 			if (needCommitMsg) {
-				// execSync(`printf '%s' '${writePreCommitDefault.replace(/'/g, "'\\''")}' > .husky/commit-msg`);
 				const huskyDir = path.join(targetDir, '.husky');
 				await fs.ensureDir(huskyDir);
 				await fs.writeFile(

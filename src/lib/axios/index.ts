@@ -1,17 +1,8 @@
-import { select } from '@inquirer/prompts';
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
 
-export default async function setupAxios(targetDir: string) {
-	const axiosTemplate = await select({
-		message: '请选择axios配置模板',
-		choices: [
-			{ value: 'default', name: '基础配置' },
-			{ value: 'blobHandle', name: '带Blob类型响应处理' }
-		],
-		default: 'default'
-	});
+export default async function setupAxios(targetDir: string, axiosTemplate = 'default') {
 	try {
 		console.log(chalk.blue('🚀 开始在目标项目配置axios模板...'));
 
@@ -31,17 +22,15 @@ export default async function setupAxios(targetDir: string) {
 			const pkg = await fs.readJson(pkgPath);
 			pkg.scripts = pkg.scripts || {};
 
-			if (!pkg.scripts.prepare) {
-				/**确保 dependencies 存在 */
-				pkg.dependencies = pkg.dependencies || {};
+			/**确保 dependencies 存在 */
+			pkg.dependencies = pkg.dependencies || {};
 
-				/**添加必要依赖版本 */
-				Object.assign(pkg.dependencies, {
-					axios: '^1.10.0'
-				});
+			/**添加必要依赖版本 */
+			Object.assign(pkg.dependencies, {
+				axios: '^1.10.0'
+			});
 
-				await fs.writeJson(pkgPath, pkg, { spaces: 2 });
-			}
+			await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 			console.log(chalk.green(`✅ axios模板配置完成!`));
 		} finally {
 			/**确保恢复原始工作目录 */

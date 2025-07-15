@@ -1,3 +1,4 @@
+export const gitignore = `
 # Logs
 logs
 *.log
@@ -22,3 +23,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+`;
