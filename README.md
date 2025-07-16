@@ -11,8 +11,11 @@
    ```bash
     lhs-cli init <projectName>
     # 请选择构建工具 (Use arrow keys)
-    #   webpack
-    # > vite
+    # > webpack
+    #   vite
+    # ? 请选择模板 (Use arrow keys)
+    # ❯ 默认配置
+    #   微前端(qiankun)
     # ✔ 是否需要配置国内淘宝镜像? (Y/n) Yes
     # ? 请选择axios配置模板 (Use arrow keys)
     # ❯ 基础配置
@@ -72,4 +75,8 @@
 * MD文档说明更新
 ### 1.0.0
 * 修复使用webpack模板后在本地构建异常
+* MD文档说明更新
+### 1.1.0
+* webpack新增qiankun模板
+* 构建工具抽离方法
 * MD文档说明更新

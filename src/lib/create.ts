@@ -22,7 +22,7 @@ export async function createProject(projectName: string | undefined): Promise<vo
 		let templateLocName = 'default';
 		if (template === 'webpack') {
 			templateLocName = await select({
-				message: '请选择构建工具',
+				message: '请选择模板',
 				choices: [
 					{ value: 'default', name: '默认配置' },
 					{ value: 'qiankun', name: '微前端(qiankun)' }
@@ -73,6 +73,7 @@ templates/
 		} else {
 			result = await setOption(targetDir, projectName);
 		}
+
 		if (result) {
 			console.log(chalk.green('✔ 项目创建成功！'));
 			console.log(chalk.blue(`◇ 进入项目目录：cd ./${projectName}`));
