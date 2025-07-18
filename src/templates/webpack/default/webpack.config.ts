@@ -7,6 +7,7 @@ module.exports = (env: any, argv: any) => {
 	const isDev = argv.mode === 'development' || process.env.NODE_ENV === 'development';
 	const timestamp = Date.now();
 	const loc = isDev ? '' : `${timestamp}/`;
+
 	return {
 		entry: './src/main.ts',
 		output: {
@@ -60,10 +61,7 @@ module.exports = (env: any, argv: any) => {
 						},
 					],
 				},
-				{
-					test: /\.less$/,
-					use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader'],
-				},
+				'CSS_PREPROCESSOR_RULE',
 				{
 					test: /\.(png|jpe?g|gif|svg)$/,
 					type: 'asset/resource',

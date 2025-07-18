@@ -13,6 +13,7 @@ test
 .env.local
 .env.*.local
 test
+webpack/*
 # Log files
 npm-debug.log*
 yarn-debug.log*

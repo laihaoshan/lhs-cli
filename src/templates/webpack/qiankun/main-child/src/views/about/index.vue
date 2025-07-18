@@ -10,7 +10,7 @@ defineOptions({
 const title = ref('子应用-关于');
 </script>
 
-<style lang="less" scoped>
+<style scoped>
 .about {
 	position: relative;
 	background: #ffffff;

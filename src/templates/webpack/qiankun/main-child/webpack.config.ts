@@ -64,10 +64,7 @@ module.exports = (env: any, argv: any) => {
 						}
 					]
 				},
-				{
-					test: /\.less$/,
-					use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader']
-				},
+				'CSS_PREPROCESSOR_RULE',
 				{
 					test: /\.(png|jpe?g|gif|svg)$/,
 					type: 'asset/resource',

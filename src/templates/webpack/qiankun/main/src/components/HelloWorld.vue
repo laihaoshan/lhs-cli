@@ -49,8 +49,7 @@ const inputChange = () => {
 };
 </script>
 
-<style lang="less" scoped>
-@import '@/styles/index';
+<style scoped>
 .read-the-docs {
 	color: #888;
 }

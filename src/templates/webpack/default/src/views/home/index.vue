@@ -13,7 +13,7 @@
 	const msg = ref('Webpack + Vue');
 </script>
 
-<style lang="less" scoped>
+<style scoped>
 	.home {
 		position: relative;
 		background-color: #ffffff;

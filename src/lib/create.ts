@@ -4,12 +4,13 @@ import chalk from 'chalk';
 import setupHusky from './husky';
 import setupNpmrc from './npmrc';
 import setupAxios from './axios';
+import setupStyles from './styles';
 import setupGitignore from './gitignore';
 import { select, confirm } from '@inquirer/prompts';
 
 export async function createProject(projectName: string | undefined): Promise<void> {
 	try {
-		const template = await select({
+		const template: 'webpack' | 'vite' = await select({
 			message: '请选择构建工具',
 			choices: [
 				{ value: 'webpack', name: 'webpack' },
@@ -69,9 +70,9 @@ templates/
 		if (isQiankun) {
 			const mainApp = `${targetDir}\\main`;
 			const subApp = `${targetDir}\\main-child`;
-			result = await setOption(targetDir, projectName, [mainApp, subApp]);
+			result = await setOption(template, targetDir, projectName, [mainApp, subApp]);
 		} else {
-			result = await setOption(targetDir, projectName);
+			result = await setOption(template, targetDir, projectName);
 		}
 
 		if (result) {
@@ -92,7 +93,12 @@ templates/
 }
 
 /**配置项 */
-export async function setOption(targetDir: string, projectName: string | undefined, microApp?: string[]) {
+export async function setOption(
+	template: 'webpack' | 'vite',
+	targetDir: string,
+	projectName: string | undefined,
+	microApp?: string[]
+) {
 	/**动态修改文件内容 */
 	if (!microApp && projectName) {
 		// 读取并解析JSON
@@ -108,6 +114,17 @@ export async function setOption(targetDir: string, projectName: string | undefin
 		// 写回文件
 		await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 	}
+
+	/**询问是否添加loader */
+	const needStylesLoader: 'less' | 'sass' | 'css' = await select({
+		message: '请选择样式预处理器',
+		choices: [
+			{ name: 'Sass', value: 'sass' },
+			{ name: 'Less', value: 'less' },
+			{ name: 'CSS', value: 'css' }
+		],
+		default: 'css'
+	});
 
 	/**询问是否添加axios作为HTTP客户端 */
 	const needAxios = await confirm({
@@ -148,6 +165,10 @@ export async function setOption(targetDir: string, projectName: string | undefin
 	return new Promise(resolve => {
 		const dirArr = microApp ?? [targetDir];
 		dirArr.forEach(async (item, index) => {
+			if (needStylesLoader) {
+				await setupStyles(template, item, needStylesLoader);
+			}
+
 			if (needAxios) {
 				await setupAxios(item, axiosTemplate);
 			}

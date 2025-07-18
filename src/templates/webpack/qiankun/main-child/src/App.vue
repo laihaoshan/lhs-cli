@@ -10,7 +10,7 @@ defineOptions({
 });
 </script>
 
-<style lang="less" scoped>
+<style scoped>
 .logo {
 	height: 6em;
 	padding: 1.5em;

@@ -41,8 +41,7 @@
 	<p class="read-the-docs">Click on the and Vue logos to learn more</p>
 </template>
 
-<style lang="less" scoped>
-	@import '@/styles/index';
+<style scoped>
 	.read-the-docs {
 		color: #888;
 	}

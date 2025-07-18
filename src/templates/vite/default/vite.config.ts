@@ -38,13 +38,5 @@ export default defineConfig({
 			}
 		}
 	},
-	css: {
-		preprocessorOptions: {
-			less: {
-				lessOptions: {
-					javascriptEnabled: true // 启用内联 JavaScript
-				}
-			}
-		}
-	}
+	'CSS_PREPROCESSOR_OPTIONS'
 });
