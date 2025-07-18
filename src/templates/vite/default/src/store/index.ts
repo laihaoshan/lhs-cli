@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import type { PersistenceOptions } from 'pinia-plugin-persistedstate';
 
 export const useUserStore = defineStore('user', {
 	state: () => ({
@@ -25,5 +26,5 @@ export const useUserStore = defineStore('user', {
 				storage: localStorage
 			}
 		]
-	}
+	} as PersistenceOptions
 });
