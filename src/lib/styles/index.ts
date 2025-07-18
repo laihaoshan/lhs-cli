@@ -30,7 +30,6 @@ const setWebpackLoader = async (preprocessor: 'less' | 'sass' | 'css', targetDir
 		/**添加 prepare 脚本 */
 		const pkgPath = path.join(targetDir, 'package.json');
 		const pkg = await fs.readJson(pkgPath);
-		pkg.scripts = pkg.scripts || {};
 
 		/**确保 devDependencies 存在 */
 		pkg.devDependencies = pkg.devDependencies || {};
@@ -50,7 +49,6 @@ const setViteOption = async (preprocessor: 'less' | 'sass' | 'css', targetDir: s
 		/**添加 prepare 脚本 */
 		const pkgPath = path.join(targetDir, 'package.json');
 		const pkg = await fs.readJson(pkgPath);
-		pkg.scripts = pkg.scripts || {};
 
 		/**确保 devDependencies 存在 */
 		pkg.devDependencies = pkg.devDependencies || {};

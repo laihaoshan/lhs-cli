@@ -1,4 +1,4 @@
-# Skyline 开发模板项目
+# 开发模板项目
 
 本项目为开发模板库，主要用于提供标准化的项目结构和开发脚手架，帮助开发者快速启动新项目。当前版本包含基于 Vite 和 Webpack 的 Vue 3 + TypeScript 项目模板。
 
@@ -55,6 +55,7 @@
 - 集成常用开发工具（如 Pinia、Vue Router）
 - 支持 TypeScript 开发环境
 - 提供基础样式和组件模板
+- 集成unplugin-auto-import、unplugin-vue-components提升开发效率等工具
 
 ## 贡献指南
 
