@@ -71,6 +71,12 @@
 
 ## 更新内容
 
+### 1.3.0
+* 新增eslint&prettier可选配置
+* 移除模板内eslint&prettier相关配置
+* webpack模板选择eslint&prettier时,添加eslint-webpack-plugin配置
+* vite模板选择eslint&prettier时,添加vite-plugin-eslint配置
+* MD文档说明更新
 ### 1.2.0
 * 模板移除预处理器
 * 新增less/sass预处理可选配置

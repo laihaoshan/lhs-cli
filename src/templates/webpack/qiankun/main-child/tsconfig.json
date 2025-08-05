@@ -19,6 +19,13 @@
 		"types": ["webpack-env", "node"],
 		"lib": ["esnext", "dom", "es6"]
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.d.ts"],
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.tsx",
+		"src/**/*.vue",
+		"src/**/*.d.ts",
+		// 全局导入配置
+		"./auto-imports.d.ts"
+	],
 	"exclude": ["node_modules"]
 }

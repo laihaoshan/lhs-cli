@@ -1,10 +1,9 @@
-import { execSync } from 'child_process';
 import fs from 'fs-extra';
-import path from 'path';
 import chalk from 'chalk';
 import webpackLoader from './webpack';
 import ViteOption from './vite';
 import { stringifyLoader } from './utils/stringifyLoader';
+import { setDevDependencies } from '../utils/index';
 
 const setWebpackLoader = async (preprocessor: 'less' | 'sass' | 'css', targetDir: string) => {
 	let rule = '';
@@ -19,58 +18,46 @@ const setWebpackLoader = async (preprocessor: 'less' | 'sass' | 'css', targetDir
           ]
         },`;
 		dep = devDependencies;
-		const template = fs.readFileSync('./webpack.config.ts', 'utf-8');
-		fs.writeFileSync('./webpack.config.ts', template.replace(`'CSS_PREPROCESSOR_RULE',`, rule));
+		const template = await fs.readFileSync('./webpack.config.ts', 'utf-8');
+		await fs.writeFileSync(
+			'./webpack.config.ts',
+			template.replace(`'CSS_PREPROCESSOR_RULE',`, rule),
+		);
 	} else {
-		const template = fs.readFileSync('./webpack.config.ts', 'utf-8');
-		fs.writeFileSync('./webpack.config.ts', template.replace(/(,[^,]*?)'CSS_PREPROCESSOR_RULE'/, rule));
+		const template = await fs.readFileSync('./webpack.config.ts', 'utf-8');
+		await fs.writeFileSync(
+			'./webpack.config.ts',
+			template.replace(/(,[^,]*?)'CSS_PREPROCESSOR_RULE'/, rule),
+		);
 	}
 
-	if (dep) {
-		/**添加 prepare 脚本 */
-		const pkgPath = path.join(targetDir, 'package.json');
-		const pkg = await fs.readJson(pkgPath);
-
-		/**确保 devDependencies 存在 */
-		pkg.devDependencies = pkg.devDependencies || {};
-
-		/**添加必要依赖版本 */
-		Object.assign(pkg.devDependencies, dep);
-
-		await fs.writeJson(pkgPath, pkg, { spaces: 2 });
-	}
+	if (dep) await setDevDependencies(targetDir, dep);
 };
 
 const setViteOption = async (preprocessor: 'less' | 'sass' | 'css', targetDir: string) => {
-	let option = '';
+	let opt = '';
 	if (preprocessor !== 'css') {
 		const { options, devDependencies } = ViteOption(preprocessor);
-		option = options;
-		/**添加 prepare 脚本 */
-		const pkgPath = path.join(targetDir, 'package.json');
-		const pkg = await fs.readJson(pkgPath);
+		opt = options;
 
-		/**确保 devDependencies 存在 */
-		pkg.devDependencies = pkg.devDependencies || {};
+		await setDevDependencies(targetDir, devDependencies);
 
-		/**添加必要依赖版本 */
-		Object.assign(pkg.devDependencies, devDependencies);
+		const template = await fs.readFileSync('./vite.config.ts', 'utf-8');
 
-		await fs.writeJson(pkgPath, pkg, { spaces: 2 });
-
-		const template = fs.readFileSync('./vite.config.ts', 'utf-8');
-
-		fs.writeFileSync('./vite.config.ts', template.replace(`'CSS_PREPROCESSOR_OPTIONS'`, option));
+		await fs.writeFileSync('./vite.config.ts', template.replace(`'CSS_PREPROCESSOR_OPTIONS'`, opt));
 	} else {
-		const template = fs.readFileSync('./vite.config.ts', 'utf-8');
-		fs.writeFileSync('./vite.config.ts', template.replace(/(,[^,]*?)'CSS_PREPROCESSOR_OPTIONS'/, option));
+		const template = await fs.readFileSync('./vite.config.ts', 'utf-8');
+		await fs.writeFileSync(
+			'./vite.config.ts',
+			template.replace(/(,[^,]*?)'CSS_PREPROCESSOR_OPTIONS'/, opt),
+		);
 	}
 };
 
 export default async function setupStyles(
 	template: 'webpack' | 'vite',
 	targetDir: string,
-	preprocessor: 'less' | 'sass' | 'css'
+	preprocessor: 'less' | 'sass' | 'css',
 ) {
 	try {
 		console.log(chalk.blue('🚀 开始在目标项目配置 预处理器...'));
@@ -83,9 +70,9 @@ export default async function setupStyles(
 			process.chdir(targetDir);
 
 			if (template === 'webpack') {
-				setWebpackLoader(preprocessor, targetDir);
+				await setWebpackLoader(preprocessor, targetDir);
 			} else if (template === 'vite') {
-				setViteOption(preprocessor, targetDir);
+				await setViteOption(preprocessor, targetDir);
 			}
 
 			console.log(chalk.green(`✅ ${preprocessor}预处理器 已在 ${targetDir} 配置完成!`));

@@ -27,9 +27,14 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ msg: string }>()
+defineProps({
+  msg: {
+    type: String,
+    default: 'Hello World',
+  },
+});
 
-const count = ref(0)
+const count = ref(0);
 </script>
 
 <style scoped>

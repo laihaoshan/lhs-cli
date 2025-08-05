@@ -5,6 +5,7 @@ const Components = require('unplugin-vue-components/webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// ESLINT_PLUGIN_REQUIRE
 
 module.exports = [
 	new CleanWebpackPlugin(),
@@ -18,6 +19,7 @@ module.exports = [
 	new webpack.DefinePlugin({
 		'import.meta.env.BASE_URL': JSON.stringify('/'), // 设置你的基础路径
 	}),
+	'ESLINT_PLUGIN',
 	AutoImport({
 		include: [
 			/\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
@@ -36,11 +38,11 @@ module.exports = [
 		vueTemplate: false,
 		eslintrc: {
 			enabled: true, // 默认 `false`
-			// filepath: './.eslintrc-auto-import.json', // 默认 `./.eslintrc-auto-import.json`
+			filepath: './.eslintrc-auto-import.json', // 默认 `./.eslintrc-auto-import.json`
 			// globalsPropValue: true, // 默认 `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
 		},
 	}),
 	Components({
-		dts: 'src/components.d.ts',
+		dts: './components.d.ts',
 	}),
 ];

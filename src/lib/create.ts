@@ -6,6 +6,7 @@ import setupNpmrc from './npmrc';
 import setupAxios from './axios';
 import setupStyles from './styles';
 import setupGitignore from './gitignore';
+import setupEslintPrettier from './eslint_prettier';
 import { select, confirm } from '@inquirer/prompts';
 
 export async function createProject(projectName: string | undefined): Promise<void> {
@@ -14,9 +15,9 @@ export async function createProject(projectName: string | undefined): Promise<vo
 			message: '请选择构建工具',
 			choices: [
 				{ value: 'webpack', name: 'webpack' },
-				{ value: 'vite', name: 'vite' }
+				{ value: 'vite', name: 'vite' },
 			],
-			default: 'vite'
+			default: 'vite',
 		});
 
 		/**展示只有默认 */
@@ -26,9 +27,9 @@ export async function createProject(projectName: string | undefined): Promise<vo
 				message: '请选择模板',
 				choices: [
 					{ value: 'default', name: '默认配置' },
-					{ value: 'qiankun', name: '微前端(qiankun)' }
+					{ value: 'qiankun', name: '微前端(qiankun)' },
 				],
-				default: 'default'
+				default: 'default',
 			});
 		}
 
@@ -55,7 +56,7 @@ templates/
 		if (fs.existsSync(targetDir)) {
 			const overwrite = await confirm({
 				message: '目录已存在，是否覆盖？',
-				default: false
+				default: false,
 			});
 			if (!overwrite) process.exit(1);
 			await fs.emptyDir(targetDir);
@@ -97,7 +98,7 @@ export async function setOption(
 	template: 'webpack' | 'vite',
 	targetDir: string,
 	projectName: string | undefined,
-	microApp?: string[]
+	microApp?: string[],
 ) {
 	/**动态修改文件内容 */
 	if (!microApp && projectName) {
@@ -121,15 +122,21 @@ export async function setOption(
 		choices: [
 			{ name: 'Sass', value: 'sass' },
 			{ name: 'Less', value: 'less' },
-			{ name: 'CSS', value: 'css' }
+			{ name: 'CSS', value: 'css' },
 		],
-		default: 'css'
+		default: 'css',
+	});
+
+	/**询问是否需要eslint/prettie */
+	const needEslintPrettier = await confirm({
+		message: '是否配置 eslint & prettie ?',
+		default: true,
 	});
 
 	/**询问是否添加axios作为HTTP客户端 */
 	const needAxios = await confirm({
 		message: '是否以 axios 作为HTTP客户端?',
-		default: true
+		default: true,
 	});
 	let axiosTemplate = 'default';
 	if (needAxios) {
@@ -137,53 +144,82 @@ export async function setOption(
 			message: '请选择axios配置模板',
 			choices: [
 				{ value: 'default', name: '基础配置' },
-				{ value: 'blobHandle', name: '带Blob类型响应处理' }
+				{ value: 'blobHandle', name: '带Blob类型响应处理' },
 			],
-			default: 'default'
+			default: 'default',
 		});
 	}
 	/**询问是否添加国内淘宝镜像 */
 	const needNpmrc = await confirm({
 		message: '是否需要配置国内淘宝镜像?',
-		default: true
+		default: true,
 	});
 
 	/**询问是否添加husky */
 	const needHusky = await confirm({
 		message: '是否需要添加 husky (Git hooks 工具)?',
-		default: true
+		default: true,
 	});
 	/**是否提交校验信息 */
 	let needCommitMsg = false;
 	if (needHusky) {
 		needCommitMsg = await confirm({
 			message: 'commit-msg 是否需要配置提交校验规则?',
-			default: true
+			default: true,
 		});
 	}
 
-	return new Promise(resolve => {
-		const dirArr = microApp ?? [targetDir];
-		dirArr.forEach(async (item, index) => {
-			if (needStylesLoader) {
-				await setupStyles(template, item, needStylesLoader);
-			}
-
-			if (needAxios) {
-				await setupAxios(item, axiosTemplate);
-			}
-
-			if (needNpmrc) {
-				await setupNpmrc(item);
-			}
-
-			if (needHusky) {
-				await setupHusky(item, needCommitMsg);
-			}
-			await setupGitignore(item);
-			if (index === dirArr.length - 1) {
-				resolve(true);
-			}
-		});
+	return new Promise(async resolve => {
+		const option = {
+			needStylesLoader,
+			needAxios,
+			axiosTemplate,
+			needNpmrc,
+			needHusky,
+			needCommitMsg,
+			needEslintPrettier,
+		};
+		if (!microApp) {
+			await ConfigureLoading(template, targetDir, option);
+		} else {
+			await ConfigureLoading(template, microApp[0], option);
+			await ConfigureLoading(template, microApp[1], option);
+		}
+		resolve(true);
 	});
 }
+
+const ConfigureLoading = async (
+	template: 'webpack' | 'vite',
+	dir: string,
+	option: Record<string, any>,
+) => {
+	const {
+		needStylesLoader,
+		needAxios,
+		axiosTemplate,
+		needNpmrc,
+		needHusky,
+		needCommitMsg,
+		needEslintPrettier,
+	} = option;
+	if (needStylesLoader) {
+		await setupStyles(template, dir, needStylesLoader);
+	}
+
+	if (needAxios) {
+		await setupAxios(dir, axiosTemplate);
+	}
+
+	if (needNpmrc) {
+		await setupNpmrc(dir);
+	}
+
+	if (needHusky) {
+		await setupHusky(dir, needCommitMsg);
+	}
+
+	await setupEslintPrettier(template, dir, needEslintPrettier);
+
+	await setupGitignore(dir);
+};

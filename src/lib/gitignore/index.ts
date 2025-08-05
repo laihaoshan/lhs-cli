@@ -1,7 +1,6 @@
-import fs from 'fs-extra';
-import path from 'path';
 import chalk from 'chalk';
 import { gitignore } from './ignore';
+import { fsWriteFile } from '../utils/fs';
 
 export default async function setupGitignore(targetDir: string) {
 	try {
@@ -12,11 +11,7 @@ export default async function setupGitignore(targetDir: string) {
 			// 切换到目标目录
 			process.chdir(targetDir);
 
-			await fs.writeFile(
-				path.join(targetDir, '.gitignore'),
-				gitignore,
-				{ mode: 0o755 } // 确保文件有可执行权限
-			);
+			await fsWriteFile(__dirname, targetDir, '.gitignore', gitignore);
 		} finally {
 			/**确保恢复原始工作目录 */
 			process.chdir(originalDir);

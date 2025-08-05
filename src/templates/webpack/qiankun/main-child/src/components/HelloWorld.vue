@@ -24,10 +24,6 @@ defineProps<{ msg: string }>();
 const count = ref(0);
 const store = useGlobalStore();
 
-onMounted(() => {
-	store.actions;
-});
-
 const addCount = () => {
 	count.value++;
 	store.actions.setGlobalState({

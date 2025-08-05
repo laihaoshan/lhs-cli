@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
+import { fsCopyFile } from '../utils/fs';
 
 export default async function setupAxios(targetDir: string, axiosTemplate = 'default') {
 	try {
@@ -9,14 +10,19 @@ export default async function setupAxios(targetDir: string, axiosTemplate = 'def
 		// 保存当前工作目录
 		const originalDir = process.cwd();
 
-		const templateDir = path.join(__dirname, `./templates`);
+		// const templateDir = path.join(__dirname, `./templates`);
 		try {
 			// 切换到目标目录
 			process.chdir(targetDir);
 
-			const templateFile = `${axiosTemplate}.ts`;
-			await fs.copy(path.join(templateDir, templateFile), path.join(targetDir, '\\src\\axios\\request.ts'));
-
+			// const templateFile = `${axiosTemplate}.ts`;
+			// await fs.copy(path.join(templateDir, templateFile), path.join(targetDir, '\\src\\axios\\request.ts'));
+			await fsCopyFile(
+				__dirname,
+				targetDir,
+				`./templates/${axiosTemplate}.ts`,
+				'\\src\\axios\\request.ts',
+			);
 			/**添加 prepare 脚本 */
 			const pkgPath = path.join(targetDir, 'package.json');
 			const pkg = await fs.readJson(pkgPath);
@@ -27,7 +33,7 @@ export default async function setupAxios(targetDir: string, axiosTemplate = 'def
 
 			/**添加必要依赖版本 */
 			Object.assign(pkg.dependencies, {
-				axios: '^1.10.0'
+				axios: '^1.10.0',
 			});
 
 			await fs.writeJson(pkgPath, pkg, { spaces: 2 });

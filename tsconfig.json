@@ -10,9 +10,10 @@
 		"forceConsistentCasingInFileNames": true,
 		// "declaration": true,
 		// "declarationDir": "./dist/types",
-		"moduleResolution": "node"
+		"moduleResolution": "node",
 		// "typeRoots": ["./node_modules/@types"],
 		// "types": [] // 不自动包含任何类型定义
+		"resolveJsonModule": true
 	},
 	"include": ["src/**/*"],
 	"exclude": [
@@ -20,6 +21,7 @@
 		"dist",
 		"types",
 		"src/templates/**/*", // 排除所有模板文件
-		"src/lib/axios/templates/*" // 排除所有模板文件
+		"src/lib/axios/templates/*", // 排除所有模板文件
+		"src/lib/eslint_prettier/**/*.json" // 排除所有模板文件
 	]
 }

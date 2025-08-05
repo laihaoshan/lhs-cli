@@ -3,6 +3,8 @@ import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
 import { writePreCommitDefault } from './commit-msg';
+import { readPackageJson, setDevDependencies, setScripts } from '../utils/index';
+import { fsWriteFile } from '../utils/fs';
 
 export default async function setupHusky(targetDir: string, needCommitMsg: boolean) {
 	try {
@@ -25,47 +27,40 @@ export default async function setupHusky(targetDir: string, needCommitMsg: boole
 			if (needCommitMsg) {
 				const huskyDir = path.join(targetDir, '.husky');
 				await fs.ensureDir(huskyDir);
-				await fs.writeFile(
-					path.join(huskyDir, 'commit-msg'),
-					writePreCommitDefault,
-					{ mode: 0o755 } // 确保文件有可执行权限
-				);
+				await fsWriteFile(__dirname, huskyDir, 'commit-msg', writePreCommitDefault);
 			}
 
 			/**添加 prepare 脚本 */
-			const pkgPath = path.join(targetDir, 'package.json');
-			const pkg = await fs.readJson(pkgPath);
-			pkg.scripts = pkg.scripts || {};
-
-			if (!pkg.scripts.prepare) {
-				/**确保 devDependencies 存在 */
-				pkg.scripts = pkg.scripts || {};
-				pkg.devDependencies = pkg.devDependencies || {};
-				pkg.husky = pkg.husky || {};
-
-				/**添加必要依赖版本 */
-				Object.assign(pkg.devDependencies, {
+			const { pkgPath, pkg } = await readPackageJson(targetDir);
+			await setDevDependencies(
+				targetDir,
+				{
 					'@commitlint/cli': '^19.8.1',
 					'@commitlint/config-conventional': '^19.8.1',
 					husky: '^9.1.7',
-					'lint-staged': '^16.1.2'
-				});
-
-				/**添加 scripts */
-				Object.assign(pkg.scripts, {
+					'lint-staged': '^16.1.2',
+				},
+				{ pkgPath, pkg },
+			);
+			await setScripts(
+				targetDir,
+				{
 					prepare: 'husky install',
-					commitlint: 'commitlint -e -V'
-				});
+					commitlint: 'commitlint -e -V',
+				},
+				{ pkgPath, pkg },
+			);
 
-				/**安全地添加 husky 配置 */
-				pkg.husky.hooks = {
-					...pkg.husky.hooks,
-					'pre-commit': 'lint-staged',
-					'commit-msg': 'commitlint -e $HUSKY_GIT_PARAMS'
-				};
+			pkg.husky = pkg.husky || {};
 
-				await fs.writeJson(pkgPath, pkg, { spaces: 2 });
-			}
+			/**安全地添加 husky 配置 */
+			pkg.husky.hooks = {
+				...pkg.husky.hooks,
+				'pre-commit': 'lint-staged',
+				'commit-msg': 'commitlint -e $HUSKY_GIT_PARAMS',
+			};
+
+			await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 
 			console.log(chalk.green(`✅ husky 已在 ${targetDir} 配置完成!`));
 		} finally {

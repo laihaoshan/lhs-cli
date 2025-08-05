@@ -1,4 +1,29 @@
 {
-	"files": [],
-	"references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
+	"extends": "@vue/tsconfig/tsconfig.dom.json",
+	"compilerOptions": {
+		/* Linting */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		// "erasableSyntaxOnly": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedSideEffectImports": true,
+		"types": [
+			"vite/client",
+			"unplugin-vue-components/types", // 支持组件自动导入类型
+			"vue"
+		],
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		}
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.vue",
+		"src/**/*.d.ts",
+		"types/**/*.d.ts",
+		"./auto-imports.d.ts"
+	],
+	"exclude": ["node_modules"]
 }

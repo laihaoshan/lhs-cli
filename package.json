@@ -1,6 +1,6 @@
 {
   "name": "lhs-cli",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "license": "MIT",
   "bin": {
     "lhs-cli": "./dist/bin/cli.js"
@@ -25,11 +25,14 @@
     "commander": "^14.0.0",
     "fs-extra": "^11.2.0",
     "minimist": "^1.2.8",
+    "prettier": "^3.6.2",
+    "stringify-object": "^5.0.0",
     "tsx": "^4.20.3"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.4",
+    "@types/stringify-object": "^4.0.5",
     "copyfiles": "^2.4.1",
     "husky": "^9.1.7",
     "ts-node": "^10.9.2",
@@ -53,7 +56,7 @@
     "name": "lai_haoshan"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "repository": {
     "type": "git",
